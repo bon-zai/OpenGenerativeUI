@@ -103,6 +103,7 @@ const DocumentEditor = () => {
   });
 
   const [placeholderVisible, setPlaceholderVisible] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [currentDocument, setCurrentDocument] = useState("");
   const wasRunning = useRef(false);
   const isMountedRef = useRef(true);
@@ -113,6 +114,22 @@ const DocumentEditor = () => {
       isMountedRef.current = false;
     };
   }, []);
+
+  // Track editor focus state
+  useEffect(() => {
+    if (!editor) return;
+
+    const handleFocus = () => setIsFocused(true);
+    const handleBlur = () => setIsFocused(false);
+
+    editor.on("focus", handleFocus);
+    editor.on("blur", handleBlur);
+
+    return () => {
+      editor.off("focus", handleFocus);
+      editor.off("blur", handleBlur);
+    };
+  }, [editor]);
 
   useConfigureSuggestions({
     suggestions: [
@@ -189,7 +206,8 @@ const DocumentEditor = () => {
   useEffect(() => {
     if (!isMountedRef.current) return;
 
-    setPlaceholderVisible(text.length === 0);
+    // Show placeholder only when editor is not focused AND text is empty
+    setPlaceholderVisible(text.length === 0 && !isFocused);
 
     if (!isLoading && text !== currentDocument) {
       setCurrentDocument(text);
@@ -197,7 +215,7 @@ const DocumentEditor = () => {
         document: text,
       });
     }
-  }, [text, isLoading, currentDocument, setAgentState]);
+  }, [text, isLoading, currentDocument, isFocused, setAgentState]);
 
   // Human-in-the-loop: confirm_changes (legacy)
   useHumanInTheLoop(
