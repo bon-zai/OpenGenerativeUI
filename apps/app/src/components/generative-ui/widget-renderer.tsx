@@ -443,6 +443,7 @@ export function WidgetRenderer({ title, description, html }: WidgetRendererProps
   const [height, setHeight] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoom, setZoom] = useState(1);
   // Track what html has been committed to the iframe to avoid redundant reloads
   const committedHtmlRef = useRef("");
   const isFirstRenderRef = useRef(true);
@@ -510,6 +511,22 @@ export function WidgetRenderer({ title, description, html }: WidgetRendererProps
   const showLoading = !!html && !ready;
   const loadingPhrase = useLoadingPhrase(showLoading);
 
+  const toolbarBtnStyle: React.CSSProperties = {
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    padding: "2px 0",
+    color: "var(--text-secondary, #6b7280)",
+    fontSize: 13,
+    fontFamily: "inherit",
+    width: 24,
+    height: 24,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 4,
+  };
+
   return (
     <>
       {/* Fullscreen backdrop */}
@@ -547,12 +564,42 @@ export function WidgetRenderer({ title, description, html }: WidgetRendererProps
             display: "flex",
             justifyContent: "flex-end",
             alignItems: "center",
+            gap: 4,
             padding: isFullscreen ? "8px 16px" : "0 0 4px 0",
             ...(isFullscreen ? { borderBottom: "1px solid var(--border-secondary, #e5e7eb)" } : {}),
           }}>
+            {ready && (
+              <>
+                <button
+                  onClick={() => setZoom(z => Math.max(0.25, z - 0.25))}
+                  style={toolbarBtnStyle}
+                  title="Zoom out"
+                >
+                  −
+                </button>
+                <span style={{ fontSize: 12, color: "var(--text-secondary, #6b7280)", minWidth: 36, textAlign: "center", fontFamily: "inherit" }}>
+                  {Math.round(zoom * 100)}%
+                </span>
+                <button
+                  onClick={() => setZoom(z => Math.min(3, z + 0.25))}
+                  style={toolbarBtnStyle}
+                  title="Zoom in"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => setZoom(1)}
+                  style={{ ...toolbarBtnStyle, fontSize: 11, width: "auto", padding: "2px 8px" }}
+                  title="Reset zoom"
+                >
+                  Fit
+                </button>
+                <div style={{ width: 1, height: 16, background: "var(--border-secondary, #e5e7eb)", margin: "0 4px" }} />
+              </>
+            )}
             <button
               onClick={() => setIsFullscreen(v => !v)}
-              style={{ background: "transparent", border: "none", cursor: "pointer", padding: "4px 8px", color: "var(--text-secondary, #6b7280)", fontSize: 13, fontFamily: "inherit" }}
+              style={{ ...toolbarBtnStyle, width: "auto", padding: "2px 8px" }}
             >
               {isFullscreen ? "✕ Close" : "⤢ Expand"}
             </button>
@@ -596,23 +643,31 @@ export function WidgetRenderer({ title, description, html }: WidgetRendererProps
             </div>
           </div>
         )}
-        {/* Single iframe — always mounted so ref is stable */}
-        <iframe
-          ref={iframeRef}
-          sandbox="allow-scripts allow-same-origin"
-          className="w-full border-0"
-          onLoad={() => setLoaded(true)}
-          style={{
-            height: isFullscreen ? undefined : (ready ? height : 0),
-            flex: isFullscreen ? 1 : undefined,
-            overflow: "hidden",
-            background: "transparent",
-            opacity: ready ? 1 : 0,
-            transition: "opacity 300ms ease-in",
-            display: html ? undefined : "none",
-          }}
-          title={title}
-        />
+        {/* Zoom container — clips overflow, iframe scales inside */}
+        <div style={{
+          overflow: "hidden",
+          height: isFullscreen ? undefined : (ready ? height * zoom : 0),
+          flex: isFullscreen ? 1 : undefined,
+          display: html ? undefined : "none",
+        }}>
+          <iframe
+            ref={iframeRef}
+            sandbox="allow-scripts allow-same-origin"
+            className="w-full border-0"
+            onLoad={() => setLoaded(true)}
+            style={{
+              height: isFullscreen ? `${100 / zoom}%` : (ready ? height : 0),
+              width: `${100 / zoom}%`,
+              transform: `scale(${zoom})`,
+              transformOrigin: "top left",
+              overflow: "hidden",
+              background: "transparent",
+              opacity: ready ? 1 : 0,
+              transition: "opacity 300ms ease-in, transform 150ms ease-out",
+            }}
+            title={title}
+          />
+        </div>
       </div>
     </>
 
