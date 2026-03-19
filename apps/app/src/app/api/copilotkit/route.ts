@@ -32,6 +32,17 @@ const documentAgent = new LangGraphAgent({
   langsmithApiKey: process.env.LANGSMITH_API_KEY || "",
 });
 
+// Wire up MCP apps middleware for document agent
+documentAgent.use(
+  new MCPAppsMiddleware({
+    mcpServers: [{
+      type: "http",
+      url: process.env.MCP_SERVER_URL || "https://mcp.excalidraw.com",
+      serverId: "example_mcp_app",
+    }],
+  })
+);
+
 // Allow long-running agent + MCP tool calls
 export const maxDuration = 300;
 
