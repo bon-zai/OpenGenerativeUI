@@ -57,7 +57,7 @@ export default function CanvasPage() {
                   </svg>
                 </div>
                 <p className="text-base font-semibold m-0 leading-snug" style={{ color: "var(--text-primary)" }}>
-                  Document to MCP
+                  Document to Diagram
                   <span className="font-normal" style={{ color: "var(--text-secondary)" }}> — powered by CopilotKit</span>
                 </p>
               </div>
