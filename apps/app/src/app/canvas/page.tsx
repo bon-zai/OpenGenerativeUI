@@ -164,7 +164,7 @@ const DocumentEditor = () => {
   // Initialize editor with default document on mount
   useEffect(() => {
     if (!editor || !isMountedRef.current) return;
-    editor.commands.setContent(fromMarkdown(currentDocument));
+    editor.commands.setContent(currentDocument);
   }, [editor, currentDocument]);
 
   // Cleanup on unmount to prevent state updates after component is removed
@@ -237,9 +237,7 @@ const DocumentEditor = () => {
     if (wasRunning.current && !isLoading) {
       if (currentDocument.trim().length > 0 && currentDocument !== agentState?.document) {
         const newDocument = agentState?.document || "";
-        const diff = diffPartialText(currentDocument, newDocument, true);
-        const markdown = fromMarkdown(diff);
-        editor?.commands.setContent(markdown);
+        editor?.commands.setContent(newDocument);
       }
     }
     wasRunning.current = isLoading;
@@ -249,18 +247,10 @@ const DocumentEditor = () => {
   useEffect(() => {
     if (!isMountedRef.current) return;
 
-    if (isLoading) {
-      if (currentDocument.trim().length > 0) {
-        const newDocument = agentState?.document || "";
-        const diff = diffPartialText(currentDocument, newDocument);
-        const markdown = fromMarkdown(diff);
-        editor?.commands.setContent(markdown);
-      } else {
-        const markdown = fromMarkdown(agentState?.document || "");
-        editor?.commands.setContent(markdown);
-      }
+    if (isLoading && agentState?.document) {
+      editor?.commands.setContent(agentState.document);
     }
-  }, [agentState?.document, isLoading, currentDocument, editor]);
+  }, [agentState?.document, isLoading, editor]);
 
   const text = editor?.getText() || "";
 
@@ -290,11 +280,11 @@ const DocumentEditor = () => {
           respond={respond}
           status={status}
           onReject={() => {
-            editor?.commands.setContent(fromMarkdown(currentDocument));
+            editor?.commands.setContent(currentDocument);
             setAgentState({ document: currentDocument });
           }}
           onConfirm={() => {
-            editor?.commands.setContent(fromMarkdown(agentState?.document || ""));
+            editor?.commands.setContent(agentState?.document || "");
             setCurrentDocument(agentState?.document || "");
             setAgentState({ document: agentState?.document || "" });
           }}
@@ -321,11 +311,11 @@ const DocumentEditor = () => {
               respond={respond}
               status={status}
               onReject={() => {
-                editor?.commands.setContent(fromMarkdown(currentDocument));
+                editor?.commands.setContent(currentDocument);
                 setAgentState({ document: currentDocument });
               }}
               onConfirm={() => {
-                editor?.commands.setContent(fromMarkdown(agentState?.document || ""));
+                editor?.commands.setContent(agentState?.document || "");
                 setCurrentDocument(agentState?.document || "");
                 setAgentState({ document: agentState?.document || "" });
               }}
