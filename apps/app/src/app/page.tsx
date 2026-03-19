@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ExampleLayout } from "@/components/example-layout";
 import { useGenerativeUIExamples, useExampleSuggestions } from "@/hooks";
 import { ExplainerCardsPortal } from "@/components/explainer-cards";
@@ -10,6 +10,10 @@ import { CopilotChat } from "@copilotkit/react-core/v2";
 export default function HomePage() {
   useGenerativeUIExamples();
   useExampleSuggestions();
+
+  // Defer CopilotChat to client-only to avoid Radix hydration ID mismatch
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // Widget bridge: handle openLink from widget iframes
   useEffect(() => {
@@ -75,11 +79,13 @@ export default function HomePage() {
           </div>
 
           <ExampleLayout chatContent={
-            <CopilotChat
-              labels={{
-                welcomeMessageText: "What do you want to visualize today?",
-              }}
-            />
+            mounted ? (
+              <CopilotChat
+                labels={{
+                  welcomeMessageText: "What do you want to visualize today?",
+                }}
+              />
+            ) : null
           } />
           <ExplainerCardsPortal />
         </div>

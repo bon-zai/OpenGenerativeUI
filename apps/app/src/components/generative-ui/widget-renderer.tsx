@@ -455,7 +455,7 @@ export function WidgetRenderer({ title, description, html }: WidgetRendererProps
       e.data?.type === "widget-resize" &&
       typeof e.data.height === "number"
     ) {
-      setHeight(Math.max(50, Math.min(e.data.height + 8, 4000)));
+      setHeight(Math.max(50, Math.min(e.data.height + 8, 800)));
     }
   }, []);
 
