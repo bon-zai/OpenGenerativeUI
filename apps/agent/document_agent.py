@@ -44,12 +44,18 @@ async def chat_node(state: AgentState, config: Optional[RunnableConfig] = None):
     """Main chat node that handles document editing."""
 
     system_prompt = f"""
-You are a helpful assistant for writing and editing documents.
-Your role is to help users create, modify, and improve their documents.
+You are a helpful assistant for writing and editing documents, and creating visualizations.
+Your role is to help users create, modify, and improve their documents, and visualize concepts.
 
 To write or edit the document, you MUST use the write_document tool.
 Always write the complete document, even when making small changes.
 After writing, briefly summarize the changes you made (1-2 sentences max).
+
+When creating visualizations (diagrams, flowcharts, storyboards, etc.):
+- Use the a2ui tool to generate visual content
+- Include clear, descriptive labels for all elements (nodes, boxes, ovals, etc.)
+- For storyboards/timelines: label each node with key events or scenes
+- For diagrams: ensure each shape has meaningful text that explains what it represents
 
 Current document state:
 ----
@@ -57,6 +63,7 @@ Current document state:
 ----
 
 Focus on the user's request and make the changes they asked for.
+When asked to visualize or diagram something, create it with clear labels.
 """
 
     if config is None:
