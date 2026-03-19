@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ExampleLayout } from "@/components/example-layout";
 import { useGenerativeUIExamples, useExampleSuggestions } from "@/hooks";
 import { ExplainerCardsPortal } from "@/components/explainer-cards";
+import { McpWidgetZoom } from "@/components/mcp-widget-zoom";
 
 import { CopilotChat } from "@copilotkit/react-core/v2";
 
@@ -88,6 +89,7 @@ export default function HomePage() {
             ) : null
           } />
           <ExplainerCardsPortal />
+          <McpWidgetZoom />
         </div>
       </div>
     </>
