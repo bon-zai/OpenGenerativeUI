@@ -106,6 +106,46 @@ interface AgentState {
   document: string;
 }
 
+const DEFAULT_DOCUMENT = `# How do WebSockets Work?
+
+## 1. The Handshake (HTTP Upgrade)
+
+It starts as a regular HTTP request. The client sends a special header asking to "upgrade" the connection:
+
+- GET /chat HTTP/1.1
+- Upgrade: websocket
+- Connection: Upgrade
+
+The server responds with 101 Switching Protocols, and from that point on, the connection is no longer HTTP — it's a WebSocket.
+
+## 2. The Persistent Connection
+
+Unlike HTTP (where each request opens and closes a connection), the WebSocket connection stays open. Both sides can now send messages to each other at any time without waiting for the other to ask first.
+
+## 3. Frames, Not Requests
+
+Data is sent as lightweight "frames" — small packets that can carry text, binary data, or control signals (like ping/pong to keep the connection alive).
+
+## HTTP vs WebSocket
+
+| Aspect | HTTP | WebSocket |
+|--------|------|-----------|
+| Direction | One-way (request → response) | Two-way (either side) |
+| Connection | Opens and closes each time | Stays open |
+| Overhead | Headers sent every request | Minimal after handshake |
+| Use case | Loading pages, REST APIs | Chat, live feeds, games |
+
+## A simple mental model
+
+Think of HTTP like sending letters — you write one, wait for a reply, then write another. WebSocket is like a phone call — once connected, both people can speak freely at any time without hanging up between each sentence.
+
+## Common use cases
+
+- Chat apps — messages appear instantly without polling
+- Live dashboards — stock prices, sports scores, analytics
+- Multiplayer games — real-time position and state sync
+- Collaborative tools — like Google Docs, where edits appear live`;
+
 const DocumentEditor = () => {
   const editor = useEditor({
     extensions,
@@ -117,9 +157,16 @@ const DocumentEditor = () => {
 
   const [placeholderVisible, setPlaceholderVisible] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [currentDocument, setCurrentDocument] = useState("");
+  const [currentDocument, setCurrentDocument] = useState(DEFAULT_DOCUMENT);
   const wasRunning = useRef(false);
   const isMountedRef = useRef(true);
+
+  // Initialize editor with default document on mount
+  useEffect(() => {
+    if (editor && currentDocument) {
+      editor.commands.setContent(fromMarkdown(currentDocument));
+    }
+  }, [editor]);
 
   // Cleanup on unmount to prevent state updates after component is removed
   useEffect(() => {
@@ -301,7 +348,7 @@ const DocumentEditor = () => {
     <div className="relative h-full w-full flex flex-col overflow-hidden">
       {placeholderVisible && (
         <div className="absolute top-6 left-10 pointer-events-none text-sm" style={{ color: "var(--text-tertiary)" }}>
-          Write whatever you want here in Markdown format...
+          How do WebSockets work?
         </div>
       )}
       <div className="flex-1 overflow-hidden flex flex-col" style={{ cursor: "text" }}>
