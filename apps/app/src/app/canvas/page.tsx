@@ -222,7 +222,7 @@ const DocumentEditor = () => {
         message: "Write a detailed document about continuous integration and continuous deployment, covering stages, automated testing, build artifacts, and deployment strategies.",
       },
     ],
-    available: "always",
+    available: "on-empty",
   });
 
   const { agent } = useAgent({
