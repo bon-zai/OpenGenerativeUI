@@ -265,8 +265,12 @@ const DocumentEditor = () => {
           Write whatever you want here in Markdown format...
         </div>
       )}
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <EditorContent editor={editor} className="h-full p-10 overflow-y-auto" />
+      <div className="flex-1 overflow-hidden flex flex-col" style={{ cursor: "text" }}>
+        <EditorContent
+          editor={editor}
+          className="h-full p-10 overflow-y-auto"
+          style={{ cursor: "text" }}
+        />
       </div>
     </div>
   );

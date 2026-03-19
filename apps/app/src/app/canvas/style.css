@@ -99,3 +99,26 @@
   padding: 2px;
   font-style: normal;
 }
+
+/* Editor focus and interaction states */
+.tiptap {
+  outline: none;
+  cursor: text;
+}
+
+.tiptap:focus,
+.tiptap:focus-visible {
+  outline: none;
+}
+
+/* Tiptap container styling */
+.ProseMirror {
+  outline: none;
+  cursor: text;
+  min-height: 100%;
+}
+
+.ProseMirror:focus,
+.ProseMirror:focus-visible {
+  outline: none;
+}
