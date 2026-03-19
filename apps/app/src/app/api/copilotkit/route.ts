@@ -25,6 +25,9 @@ defaultAgent.use(
   })
 );
 
+// Allow long-running agent + MCP tool calls
+export const maxDuration = 300;
+
 // 3. Define the route and CopilotRuntime for the agent
 export const POST = async (req: NextRequest) => {
   const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
