@@ -201,6 +201,26 @@ const DocumentEditor = () => {
         title: "Generate WebSocket document",
         message: "Create a comprehensive document explaining how WebSockets work, including the handshake process, persistent connections, frames, comparison with HTTP, and common use cases.",
       },
+      {
+        title: "Explain REST API architecture",
+        message: "Write a detailed document about REST API design principles, HTTP methods, status codes, request/response structure, and best practices.",
+      },
+      {
+        title: "How does OAuth 2.0 work?",
+        message: "Create a document explaining OAuth 2.0 authentication flow, including authorization servers, access tokens, refresh tokens, and common scenarios.",
+      },
+      {
+        title: "Microservices architecture",
+        message: "Write a comprehensive guide to microservices architecture, covering service decomposition, inter-service communication, data consistency, and deployment patterns.",
+      },
+      {
+        title: "What is GraphQL?",
+        message: "Create a document explaining GraphQL, including how it differs from REST, query language basics, schema definition, and resolver functions.",
+      },
+      {
+        title: "CI/CD pipeline explained",
+        message: "Write a detailed document about continuous integration and continuous deployment, covering stages, automated testing, build artifacts, and deployment strategies.",
+      },
     ],
     available: "always",
   });
