@@ -198,20 +198,8 @@ const DocumentEditor = () => {
   useConfigureSuggestions({
     suggestions: [
       {
-        title: "Write a pirate story",
-        message: "Please write a story about a pirate named Candy Beard.",
-      },
-      {
-        title: "Write a mermaid story",
-        message: "Please write a story about a mermaid named Luna.",
-      },
-      {
-        title: "Add character",
-        message: "Please add a character named Courage.",
-      },
-      {
-        title: "Create documentation",
-        message: "Create technical documentation for a REST API.",
+        title: "Generate WebSocket document",
+        message: "Create a comprehensive document explaining how WebSockets work, including the handshake process, persistent connections, frames, comparison with HTTP, and common use cases.",
       },
     ],
     available: "always",
