@@ -71,6 +71,14 @@ const DocumentEditor = () => {
   const [placeholderVisible, setPlaceholderVisible] = useState(false);
   const [currentDocument, setCurrentDocument] = useState("");
   const wasRunning = useRef(false);
+  const isMountedRef = useRef(true);
+
+  // Cleanup on unmount to prevent state updates after component is removed
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   useConfigureSuggestions({
     suggestions: [
@@ -113,6 +121,8 @@ const DocumentEditor = () => {
 
   // Handle final state update when run completes
   useEffect(() => {
+    if (!isMountedRef.current) return;
+
     if (wasRunning.current && !isLoading) {
       if (currentDocument.trim().length > 0 && currentDocument !== agentState?.document) {
         const newDocument = agentState?.document || "";
@@ -143,6 +153,8 @@ const DocumentEditor = () => {
 
   // Sync user edits to agent state
   useEffect(() => {
+    if (!isMountedRef.current) return;
+
     setPlaceholderVisible(text.length === 0);
 
     if (!isLoading && text !== currentDocument) {
