@@ -228,6 +228,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+#content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 button {
   font-family: inherit;
   font-size: 14px;
