@@ -163,10 +163,9 @@ const DocumentEditor = () => {
 
   // Initialize editor with default document on mount
   useEffect(() => {
-    if (editor && currentDocument) {
-      editor.commands.setContent(fromMarkdown(currentDocument));
-    }
-  }, [editor]);
+    if (!editor || !isMountedRef.current) return;
+    editor.commands.setContent(fromMarkdown(currentDocument));
+  }, [editor, currentDocument]);
 
   // Cleanup on unmount to prevent state updates after component is removed
   useEffect(() => {
@@ -210,7 +209,6 @@ const DocumentEditor = () => {
         message: "Write a comprehensive guide to microservices architecture, covering service decomposition, inter-service communication, data consistency, and deployment patterns.",
       },
     ],
-    available: "on-empty",
   });
 
   const { agent } = useAgent({
