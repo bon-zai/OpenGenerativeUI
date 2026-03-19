@@ -345,7 +345,10 @@ const DocumentEditor = () => {
           How do WebSockets work?
         </div>
       )}
-      <div className="flex-1 overflow-hidden flex flex-col" style={{ cursor: "text" }}>
+      <div
+        className={`flex-1 overflow-hidden flex flex-col ${isLoading ? "editor-streaming" : ""}`}
+        style={{ cursor: "text" }}
+      >
         <EditorContent
           editor={editor}
           className="h-full p-10 overflow-y-auto"
