@@ -132,8 +132,12 @@ const DocumentEditor = () => {
   useEffect(() => {
     if (!editor) return;
 
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => setIsFocused(false);
+    const handleFocus = () => {
+      if (isMountedRef.current) setIsFocused(true);
+    };
+    const handleBlur = () => {
+      if (isMountedRef.current) setIsFocused(false);
+    };
 
     editor.on("focus", handleFocus);
     editor.on("blur", handleBlur);
@@ -177,6 +181,8 @@ const DocumentEditor = () => {
 
   // Handle loading state transitions
   useEffect(() => {
+    if (!isMountedRef.current) return;
+
     if (isLoading) {
       setCurrentDocument(editor?.getText() || "");
     }
@@ -200,6 +206,8 @@ const DocumentEditor = () => {
 
   // Handle streaming updates while agent is running
   useEffect(() => {
+    if (!isMountedRef.current) return;
+
     if (isLoading) {
       if (currentDocument.trim().length > 0) {
         const newDocument = agentState?.document || "";
