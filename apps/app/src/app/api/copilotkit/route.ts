@@ -25,28 +25,10 @@ defaultAgent.use(
   })
 );
 
-// 3. Define the document agent for the canvas editor
-const documentAgent = new LangGraphAgent({
-  deploymentUrl: process.env.LANGGRAPH_DEPLOYMENT_URL || "http://localhost:8123",
-  graphId: "document_agent",
-  langsmithApiKey: process.env.LANGSMITH_API_KEY || "",
-});
-
-// Wire up MCP apps middleware for document agent
-documentAgent.use(
-  new MCPAppsMiddleware({
-    mcpServers: [{
-      type: "http",
-      url: process.env.MCP_SERVER_URL || "https://mcp.excalidraw.com",
-      serverId: "example_mcp_app",
-    }],
-  })
-);
-
 // Allow long-running agent + MCP tool calls
 export const maxDuration = 300;
 
-// 4. Define the route and CopilotRuntime for the agents
+// Define the route and CopilotRuntime for the agent
 export const POST = async (req: NextRequest) => {
   const { handleRequest } = copilotRuntimeNextJSAppRouterEndpoint({
     endpoint: "/api/copilotkit",
@@ -54,7 +36,6 @@ export const POST = async (req: NextRequest) => {
     runtime: new CopilotRuntime({
       agents: {
         default: defaultAgent,
-        document_agent: documentAgent,
       },
       a2ui: { injectA2UITool: true },
     }),

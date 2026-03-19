@@ -46,7 +46,7 @@ export default function CanvasPage() {
 
             {/* Right: Chat Panel */}
             <div className="w-[400px] overflow-hidden rounded-lg" style={{ background: "var(--surface-primary)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)" }}>
-              {mounted && <CopilotChat agentId="document_agent" className="h-full flex flex-col" />}
+              {mounted && <CopilotChat agentId="default" className="h-full flex flex-col" />}
             </div>
           </div>
         </CopilotKit>
@@ -95,7 +95,7 @@ const DocumentEditor = () => {
   });
 
   const { agent } = useAgent({
-    agentId: "document_agent",
+    agentId: "default",
     updates: [UseAgentUpdate.OnStateChanged, UseAgentUpdate.OnRunStatusChanged],
   });
 
@@ -156,7 +156,7 @@ const DocumentEditor = () => {
   // Human-in-the-loop: confirm_changes (legacy)
   useHumanInTheLoop(
     {
-      agentId: "document_agent",
+      agentId: "default",
       name: "confirm_changes",
       render: ({ args, respond, status }) => (
         <ConfirmChanges
@@ -181,8 +181,8 @@ const DocumentEditor = () => {
   // Human-in-the-loop: write_document (primary)
   useHumanInTheLoop(
     {
-      agentId: "document_agent",
-      name: "write_document",
+      agentId: "default",
+      name: "confirm_changes",
       description: "Present the proposed changes to the user for review",
       parameters: z.object({
         document: z.string().describe("The full updated document in markdown format"),
