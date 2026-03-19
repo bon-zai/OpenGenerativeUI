@@ -1,211 +1,164 @@
 # Excalidraw Diagram Skill
 
-Create beautiful, professional, animated Excalidraw diagrams with progressive camera reveals, color-coded zones, and polished visual design. Use this skill whenever a user asks to diagram, visualize, map, chart, illustrate, or draw anything — including architecture diagrams, flowcharts, sequence diagrams, concept explainers, system maps, process flows, and technical overviews. Also trigger for requests like "show me how X works", "draw a diagram of", "create a visual for", "make an Excalidraw of", or any time a visual explanation would be clearer than text alone.
+Create clean, simple Excalidraw diagrams with progressive camera reveals. Use this skill when a user asks to diagram, visualize, flowchart, or illustrate anything.
 
 ---
 
 ## Step 1 — Always call read_me first
 
-Before emitting ANY elements, call `Excalidraw:read_me`. Do not skip this step, even for simple diagrams. It provides the color palette, camera sizes, font rules, and element syntax required to produce clean output.
-
-```
-Excalidraw:read_me()
-```
-
-Then proceed directly to `Excalidraw:create_view` with your elements array — no narration about the read_me call.
+Before creating any elements, call `Excalidraw:read_me()` to get the color palette, camera sizes, and element syntax. Then proceed directly to `Excalidraw:create_view`.
 
 ---
 
-## Step 2 — Plan the diagram before writing elements
+## Step 2 — Planning (critical for spacing)
 
-Before writing elements, mentally sketch:
+Before writing elements:
 
-1. **What are the layers / zones?** (e.g. Frontend / Backend / Database, or Input / Process / Output)
-2. **What color grammar makes sense?** Assign one color per layer and keep it consistent throughout
-3. **How many camera positions do I need?** Plan 3–6 camera stops minimum for a reveal effect
-4. **What's the reading order?** Left-to-right or top-to-bottom; pick one and stick to it
+1. **Sketch zones/layers** — What are the main sections? (Frontend/Backend, Input/Process/Output, etc.)
+2. **Assign colors** — One color per zone, used consistently
+3. **Plan camera positions** — 3–6 stops for the reveal effect
+4. **Plan spacing** — Draw it on paper first. Leave **minimum 60px vertical gaps** between rows, **40px horizontal gaps** between columns
 
 ---
 
-## Step 3 — Core design rules (MUST follow)
+## Step 3 — Core rules (MUST follow)
 
-### Camera rules
-- **Always start with `cameraUpdate` as the first element**
-- Camera sizes MUST be exact 4:3 ratios: `400x300`, `600x450`, `800x600`, `1200x900`, `1600x1200`
-- Use **multiple cameraUpdates** throughout the array — pan to each section as you draw it
-- Leave padding: if content is 500px wide, use 800x600 camera
-- Final element should be a wide cameraUpdate showing the full diagram
+### Camera
+- Start with `cameraUpdate` as the **first element**
+- Use exact 4:3 ratios: `400x300`, `600x450`, `800x600`, `1200x900`, `1600x1200`
+- Pan to each section as you draw it
+- End with a wide view showing the full diagram
 
-### Color grammar (use consistently)
+### Spacing (prevent overlaps)
+- **Minimum vertical gap between rows: 60px**
+- **Minimum horizontal gap between columns: 40px**
+- Check all y-coordinates: if row 1 ends at y=180, row 2 starts at y=240 or later
+- Zone label at top-left (y+8px from zone top), nodes start 40px below label
+- Never place text directly on shape edges — add 8–10px padding
 
-| Zone / Role         | Fill          | Stroke    |
-|---------------------|---------------|-----------|
-| UI / Frontend       | `#dbe4ff`     | `#4a9eed` |
-| Logic / Agent       | `#e5dbff`     | `#8b5cf6` |
-| Data / Storage      | `#d3f9d8`     | `#22c55e` |
-| External / API      | `#ffd8a8`     | `#f59e0b` |
-| Error / Alert       | `#ffc9c9`     | `#ef4444` |
-| Notes / Decisions   | `#fff3bf`     | `#f59e0b` |
+### Color grammar
+| Zone | Fill | Stroke |
+|------|------|--------|
+| UI / Frontend | `#dbe4ff` | `#4a9eed` |
+| Logic / Agent | `#e5dbff` | `#8b5cf6` |
+| Data / Storage | `#d3f9d8` | `#22c55e` |
+| External / API | `#ffd8a8` | `#f59e0b` |
+| Error / Alert | `#ffc9c9` | `#ef4444` |
+| Notes | `#fff3bf` | `#f59e0b` |
 
-Zone background rectangles: use `opacity: 40`, `fillStyle: "solid"`
+### Typography
+- Title: `fontSize: 28`, `strokeColor: "#1e1e1e"`
+- Labels: `fontSize: 16–18` via `label` property
+- **Never use fontSize below 14**
+- Minimum text color: `#757575` (never light gray on white)
 
-Node shapes: use pastel fills (`#a5d8ff`, `#b2f2bb`, `#d0bfff`, `#ffd8a8`, `#c3fae8`, `#eebefa`)
-
-### Typography rules
-- Title: `fontSize: 26–28`, `strokeColor: "#1e1e1e"`
-- Subtitle / annotation: `fontSize: 16`, `strokeColor: "#757575"`
-- Shape labels: `fontSize: 16–18` via `label` property on the shape
-- NEVER use fontSize below 14
-- NEVER use light gray on white backgrounds (minimum text color: `#757575`)
-
-### Shape rules
-- Use `label: { "text": "...", "fontSize": 16 }` directly on shapes — no separate text elements
-- Minimum shape size: `120x60` for labeled boxes
-- Add `roundness: { type: 3 }` for rounded corners (preferred for nodes)
-- Leave 20–30px gaps between elements
-
-### Drawing order (z-order, critical)
-Emit in this sequence per section:
-1. Zone background rectangle (drawn first = sits behind)
+### Drawing order (z-order)
+Per section, emit in this order:
+1. Zone background rectangle (sits behind)
 2. Zone label text
 3. Node shapes (with labels)
 4. Arrows between nodes
-5. Then next section
 
-NEVER dump all rectangles, then all text, then all arrows.
+**Never dump all rectangles first, then all text.**
 
-### Arrow rules
-- Always include `endArrowhead: "arrow"` for directional flow
-- Use `strokeStyle: "dashed"` for responses, return values, optional paths
-- Keep arrow labels short (under 20 chars) or omit — long labels overflow
-- Use `startBinding` / `endBinding` with `fixedPoint` to attach to shapes
+### Shapes
+- Use `label: { "text": "...", "fontSize": 16 }` on shapes — no separate text elements
+- Minimum size: `120x60` for labeled boxes
+- Add `roundness: { type: 3 }` for rounded corners
+
+### Arrows
+- Include `endArrowhead: "arrow"` for direction
+- Use `strokeStyle: "dashed"` for responses/optional paths
+- Keep labels **under 15 characters** or omit
+- Use `startBinding` / `endBinding` with `fixedPoint` to attach cleanly
 
 ---
 
 ## Step 4 — Diagram type patterns
 
-### Architecture / System Diagram
-Zones as swim lanes (left-to-right or top-to-bottom). Each zone = one architectural layer. Arrows show data/request flow between layers. End with a full-width cameraUpdate.
+**Architecture** — Zones as swim lanes (left-to-right). Arrows show data flow.
 
-**Camera pattern:** Title zoom (M) → pan right zone by zone (S/M) → final overview (XL)
+**Sequence** — Actors as header boxes with lifelines. Horizontal arrows = messages. Pan down as flow progresses.
 
-### Sequence / Flow Diagram
-Actors as header boxes with dashed vertical lifelines. Horizontal arrows show messages. Pan camera downward as messages progress.
+**Process/Flowchart** — Top-to-bottom. Diamonds for decisions, rectangles for steps. Color-code by stage.
 
-**Camera pattern:** Title (M) → pan right per actor drawing header + lifeline → zoom out (L) → pan down per message group → final overview (XL)
-
-### Concept Explainer
-Start zoomed on the title, then reveal parts of the concept one at a time. Use annotations (`#fff3bf` boxes) as callouts. Simple left-to-right flow.
-
-**Camera pattern:** Title zoom (S) → zoom out (M) → pan section by section → final (L)
-
-### Process / Flowchart
-Diamonds for decisions, rectangles for steps. Top-to-bottom flow. Color-code by stage (e.g. initiation=blue, processing=purple, output=green).
-
-**Camera pattern:** Top zoom → pan down per stage group → final overview
+**Concept** — Start zoomed on title, reveal parts progressively. Use annotation boxes as callouts.
 
 ---
 
-## Step 5 — The camera reveal technique (what makes diagrams feel alive)
+## Step 5 — The reveal animation
 
-The secret to great Excalidraw diagrams is **drawing section by section with camera moves**:
+Draw section by section with camera moves:
 
 ```json
-// 1. Start with title, zoomed in
+// 1. Title, zoomed
 {"type":"cameraUpdate","width":600,"height":450,"x":100,"y":0},
 {"type":"text","id":"t1","x":200,"y":20,"text":"My Diagram","fontSize":28},
 
-// 2. Pan to first zone and draw it
+// 2. Pan to zone 1, draw it
 {"type":"cameraUpdate","width":400,"height":300,"x":20,"y":60},
-{"type":"rectangle","id":"zone1", ...zone background...},
-{"type":"rectangle","id":"node1", ...node with label...},
+{"type":"rectangle","id":"zone1","x":20,"y":80,"width":220,"height":380, ...},
+{"type":"rectangle","id":"node1","x":60,"y":130, ...},
 
-// 3. Pan to second zone
+// 3. Pan to zone 2
 {"type":"cameraUpdate","width":400,"height":300,"x":280,"y":60},
-{"type":"rectangle","id":"zone2", ...},
-{"type":"rectangle","id":"node2", ...},
+{"type":"rectangle","id":"node2","x":320,"y":130, ...},
 
-// 4. Draw connecting arrows (camera stays or pans to show both ends)
+// 4. Draw arrows
 {"type":"cameraUpdate","width":800,"height":600,"x":0,"y":40},
-{"type":"arrow","id":"a1", ...arrow from node1 to node2...},
+{"type":"arrow","id":"a1", ...},
 
-// 5. Final wide overview
+// 5. Final wide view
 {"type":"cameraUpdate","width":1200,"height":900,"x":-20,"y":-10}
 ```
 
-This creates the "drawing itself" animation effect users love.
-
 ---
 
-## Step 6 — Common mistakes to avoid
+## Step 6 — Overlap prevention checklist
 
-- **No cameraUpdate first** → diagram appears un-framed, elements clip
-- **Wrong aspect ratio** → `700x500` causes distortion; use `800x600`
-- **All elements at once, no panning** → loses the reveal animation
-- **Overlapping elements** → check y-coordinates leave 60–80px between rows
-- **Long arrow labels** → overflow the arrow; keep under 20 chars or use a note box instead
-- **Emoji in text** → don't render in Excalidraw's font
-- **Light text on white** → `#b0b0b0` on white is invisible; minimum `#757575`
-- **Zone label covered by nodes** → put zone label text at top-left of zone (y + 8px from zone top), nodes start 40px below
-- **Title not centered** → estimate `text.length x fontSize x 0.5` for width, then set `x = diagramCenterX - estimatedWidth/2`
-
----
-
-## Step 7 — Quality checklist before emitting
-
-- [ ] `Excalidraw:read_me` called
-- [ ] First element is `cameraUpdate`
+- [ ] All shapes have **at least 60px vertical separation**
+- [ ] Zone labels don't overlap with nodes (40px minimum gap below label)
+- [ ] Arrows don't cross unrelated zones
+- [ ] Text is 8–10px inside shape bounds (not on edges)
+- [ ] Zone backgrounds are drawn BEFORE nodes
+- [ ] Arrows drawn AFTER both source and target
+- [ ] No shape dimensions smaller than `100x50`
 - [ ] All camera sizes are valid 4:3 ratios
-- [ ] Minimum 3 camera positions used (more = better animation)
-- [ ] Color grammar is consistent across zones
-- [ ] All shape labels use `label` property, not separate text elements
-- [ ] No font sizes below 14
-- [ ] Zone backgrounds are drawn BEFORE the nodes inside them
-- [ ] Arrows drawn AFTER both source and target shapes
-- [ ] Final element is a wide cameraUpdate revealing the full diagram
-- [ ] No emoji in any text strings
+- [ ] Final element is a wide cameraUpdate
+- [ ] Minimum 3 camera positions for animation
 
 ---
 
-## Reference: Element snippets
+## Step 7 — Common mistakes
+
+- **Overlapping text** — Check y-coordinates strictly; use 60px gaps minimum
+- **No cameraUpdate first** — Elements clip and look wrong
+- **All elements at once** — Loses the animation; use multiple camerUpdates
+- **Long arrow labels** — Overflow; keep under 15 chars
+- **Light text on white** — Use `#757575` minimum
+- **Zone label covered by nodes** — Put label 8px from zone top, nodes 40px below
+- **Shapes touching edges** — Leave padding; awkward layout
+
+---
+
+## Reference: Snippets
 
 **Zone background:**
 ```json
-{"type":"rectangle","id":"zone_bg","x":20,"y":80,"width":220,"height":380,"backgroundColor":"#dbe4ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":1,"opacity":40}
-```
-
-**Zone label:**
-```json
-{"type":"text","id":"zone_lbl","x":40,"y":88,"text":"FRONTEND","fontSize":14,"strokeColor":"#2563eb"}
+{"type":"rectangle","id":"z1","x":20,"y":80,"width":220,"height":380,"backgroundColor":"#dbe4ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":1,"opacity":40}
 ```
 
 **Node:**
 ```json
-{"type":"rectangle","id":"n1","x":60,"y":130,"width":150,"height":55,"backgroundColor":"#a5d8ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":2,"label":{"text":"API Gateway","fontSize":16}}
+{"type":"rectangle","id":"n1","x":60,"y":130,"width":150,"height":55,"backgroundColor":"#a5d8ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":2,"label":{"text":"API","fontSize":16}}
 ```
 
-**Arrow (solid, directed):**
+**Arrow:**
 ```json
 {"type":"arrow","id":"a1","x":210,"y":157,"width":100,"height":0,"points":[[0,0],[100,0]],"strokeColor":"#1e1e1e","strokeWidth":2,"endArrowhead":"arrow","startBinding":{"elementId":"n1","fixedPoint":[1,0.5]},"endBinding":{"elementId":"n2","fixedPoint":[0,0.5]}}
 ```
 
-**Arrow (dashed, response):**
+**Annotation:**
 ```json
-{"type":"arrow","id":"a2","x":310,"y":157,"width":-100,"height":0,"points":[[0,0],[-100,0]],"strokeColor":"#757575","strokeWidth":2,"strokeStyle":"dashed","endArrowhead":"arrow"}
-```
-
-**Annotation note:**
-```json
-{"type":"rectangle","id":"note1","x":80,"y":200,"width":200,"height":36,"backgroundColor":"#fff3bf","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":1,"opacity":80,"label":{"text":"Caches for 5 min","fontSize":14}}
-```
-
-**Title text:**
-```json
-{"type":"text","id":"title","x":150,"y":15,"text":"System Architecture","fontSize":28,"strokeColor":"#1e1e1e"}
-```
-
-**Stick figure (user icon):**
-```json
-{"type":"ellipse","id":"fig_head","x":58,"y":110,"width":20,"height":20,"backgroundColor":"#a5d8ff","fillStyle":"solid","strokeColor":"#4a9eed","strokeWidth":2},
-{"type":"rectangle","id":"fig_body","x":57,"y":132,"width":22,"height":26,"backgroundColor":"#a5d8ff","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":2}
+{"type":"rectangle","id":"note1","x":80,"y":200,"width":200,"height":36,"backgroundColor":"#fff3bf","fillStyle":"solid","roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":1,"opacity":80,"label":{"text":"Note here","fontSize":14}}
 ```
