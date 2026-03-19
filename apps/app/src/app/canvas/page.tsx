@@ -33,23 +33,57 @@ export default function CanvasPage() {
       </div>
 
       {/* App shell */}
-      <div className="brand-shell" style={{ position: "relative", zIndex: 1, height: "100vh", overflow: "hidden" }}>
-        <CopilotKit
-          runtimeUrl="/api/copilotkit"
-          showDevConsole={false}
-        >
-          <div className="h-screen w-full flex gap-4 p-4" style={{ background: "var(--surface-light)" }}>
-            {/* Left: Document Editor */}
-            <div className="flex-1 overflow-hidden rounded-lg" style={{ background: "var(--surface-primary)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)" }}>
-              <DocumentEditor />
-            </div>
-
-            {/* Right: Chat Panel */}
-            <div className="w-[400px] overflow-hidden rounded-lg" style={{ background: "var(--surface-primary)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)" }}>
-              {mounted && <CopilotChat agentId="default" className="h-full flex flex-col" />}
+      <div className="brand-shell" style={{ position: "relative", zIndex: 1 }}>
+        <div className="brand-glass-container">
+          {/* Header Banner */}
+          <div
+            className="shrink-0 border-b border-white/30 dark:border-white/8"
+            style={{
+              background: "linear-gradient(135deg, rgba(190,194,255,0.08) 0%, rgba(133,224,206,0.06) 100%)",
+            }}
+          >
+            <div className="flex items-center justify-between gap-4 px-5 py-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div
+                  className="flex items-center justify-center shrink-0 w-9 h-9 rounded-lg text-white"
+                  style={{
+                    background: "linear-gradient(135deg, var(--color-lilac), var(--color-mint))",
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                </div>
+                <p className="text-base font-semibold m-0 leading-snug" style={{ color: "var(--text-primary)" }}>
+                  Document to MCP
+                  <span className="font-normal" style={{ color: "var(--text-secondary)" }}> — powered by CopilotKit</span>
+                </p>
+              </div>
             </div>
           </div>
-        </CopilotKit>
+
+          <CopilotKit
+            runtimeUrl="/api/copilotkit"
+            showDevConsole={false}
+          >
+            {/* Content Area */}
+            <div className="flex-1 min-h-0 flex flex-col">
+              <div className="flex-1 min-h-0 flex gap-4 p-4" style={{ background: "var(--surface-light)" }}>
+                {/* Left: Document Editor */}
+                <div className="flex-1 overflow-hidden rounded-lg" style={{ background: "var(--surface-primary)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)" }}>
+                  <DocumentEditor />
+                </div>
+
+                {/* Right: Chat Panel */}
+                <div className="w-[400px] overflow-hidden rounded-lg" style={{ background: "var(--surface-primary)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)" }}>
+                  {mounted && <CopilotChat agentId="default" className="h-full flex flex-col" />}
+                </div>
+              </div>
+            </div>
+          </CopilotKit>
+        </div>
       </div>
     </>
   );
