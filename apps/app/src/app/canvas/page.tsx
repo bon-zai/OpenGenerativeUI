@@ -61,6 +61,19 @@ export default function CanvasPage() {
                   <span className="font-normal" style={{ color: "var(--text-secondary)" }}> — powered by CopilotKit</span>
                 </p>
               </div>
+              <a
+                href="https://github.com/CopilotKit/OpenGenerativeUI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-5 py-2 rounded-full text-sm font-semibold text-white no-underline whitespace-nowrap transition-all duration-150 hover:-translate-y-px"
+                style={{
+                  background: "linear-gradient(135deg, var(--color-lilac-dark), var(--color-mint-dark))",
+                  boxShadow: "0 1px 4px rgba(149,153,204,0.3)",
+                  fontFamily: "var(--font-family)",
+                }}
+              >
+                Get started
+              </a>
             </div>
           </div>
 
