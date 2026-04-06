@@ -171,6 +171,16 @@ Deep agents also provide built-in planning (`write_todos`), filesystem tools, an
 
 Next.js 16, React 19, Tailwind CSS 4, LangChain Deep Agents, LangGraph, CopilotKit v2, Turborepo, Recharts
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=CopilotKit%2FOpenGenerativeUI&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=CopilotKit/OpenGenerativeUI&type=date&theme=dark&legend=bottom-right" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=CopilotKit/OpenGenerativeUI&type=date&legend=bottom-right" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=CopilotKit/OpenGenerativeUI&type=date&legend=bottom-right" />
+ </picture>
+</a>
+
 ## License
 
 MIT
